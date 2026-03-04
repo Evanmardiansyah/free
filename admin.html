@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - AI Setting</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; padding: 20px; }
+        .card { max-width: 500px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        input, select, button { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box;}
+        button { background: #2c3e50; color: white; font-weight: bold; cursor: pointer; border: none; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>⚙️ Admin Control Panel</h2>
+        <label>Groq API Key</label>
+        <input type="password" id="apiKey" placeholder="gsk_xxxxxxxxxxxxxxxx">
+        
+        <label>Pilih Model AI</label>
+        <select id="model">
+            <option value="llama3-8b-8192">Llama 3 (8B) - Sangat Cepat</option>
+            <option value="llama3-70b-8192">Llama 3 (70B) - Sangat Pintar</option>
+            <option value="mixtral-8x7b-32768">Mixtral 8x7B</option>
+        </select>
+        
+        <button onclick="saveSettings()">Simpan Settingan</button>
+        <p id="status" style="color: green; text-align: center;"></p>
+    </div>
+
+    <script>
+        const API_URL = "https://api.evan-cloud.my.id/api/admin/settings";
+
+        // Load settingan saat ini
+        fetch(API_URL).then(r => r.json()).then(data => {
+            document.getElementById('apiKey').value = data.apiKey || "";
+            document.getElementById('model').value = data.model || "llama3-8b-8192";
+        });
+
+        async function saveSettings() {
+            const apiKey = document.getElementById('apiKey').value;
+            const model = document.getElementById('model').value;
+            
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ apiKey, model })
+            });
+            const data = await res.json();
+            document.getElementById('status').innerText = data.message || "Tersimpan!";
+            setTimeout(() => document.getElementById('status').innerText = "", 3000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Member Dashboard - ViralStudio</title>
+    <style>
+        body { font-family: sans-serif; background: #eceff1; padding: 20px; }
+        .card { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        input, button { width: 100%; padding: 12px; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box; }
+        button { background: #8b5cf6; color: white; font-weight: bold; cursor: pointer; border: none; }
+        pre { background: #f8f9fa; padding: 15px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>👋 Selamat Datang, Member!</h2>
+        <p style="color: gray; font-size: 0.9em;">Model AI disetting otomatis oleh Admin.</p>
+        
+        <input type="text" id="prompt" placeholder="Contoh: Buat konten viral jualan sepatu...">
+        <button id="btnGen" onclick="generateContent()">Generate Konten</button>
+        
+        <div id="resultBox" style="display: none; margin-top: 20px;">
+            <h3>Hasil Konten:</h3>
+            <pre id="output"></pre>
+        </div>
+    </div>
+
+    <script>
+        async function generateContent() {
+            const prompt = document.getElementById('prompt').value;
+            const btn = document.getElementById('btnGen');
+            const resultBox = document.getElementById('resultBox');
+            const output = document.getElementById('output');
+
+            btn.innerText = "Meracik konten...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch("https://api.evan-cloud.my.id/api/generate", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ prompt: `Buat konten untuk: ${prompt}` })
+                });
+                
+                const data = await res.json();
+                if (data.error) throw new Error(data.error);
+                
+                output.innerText = JSON.stringify(data, null, 2);
+                resultBox.style.display = 'block';
+            } catch (err) {
+                alert("Error: " + err.message);
+            } finally {
+                btn.innerText = "Generate Konten";
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
